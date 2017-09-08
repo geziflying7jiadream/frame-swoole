@@ -1,3 +1,10 @@
+简单的弹幕实时网站：
+http://blog.csdn.net/qq_28602957/article/details/53523240
+好在最新的HTML5中加入了WebSocket协议，我们可以通WebSocket这种基于HTTP协议之上的即时通信协议来替代ajax这种传统的我问你答的老旧通信模式。
+而我们是PHPer，对于我们这种只懂PHP的人该如何编写WebSocket服务端呢？
+好在我们又得知PHP有一个Swoole扩展，我们在PHP语言中使用它可以很方便的构建一个WebSocket服务端。
+---------------------------
+
 Swoole简单安装与创建TCP服务器：
 http://blog.csdn.net/qq_28602957/article/details/53504298
 
@@ -39,9 +46,12 @@ $serv->on('close', function ($serv, $fd) {
 
 //启动服务器
 $serv->start();
-这里就创建了一个TCP服务器，监听本机9501端口。它的逻辑很简单，当客户端Socket通过网络发送一个 hello 字符串时，服务器会回复一个 Server: hello 字符串。
+这里就创建了一个TCP服务器，监听本机9501端口。
+它的逻辑很简单，当客户端Socket通过网络发送一个 hello 字符串时，服务器会回复一个 Server: hello 字符串。
 
-swoole_server是异步服务器，所以是通过监听事件的方式来编写程序的。当对应的事件发生时底层会主动回调指定的PHP函数。如当有新的TCP连接进入时会执行onConnect事件回调，当某个连接向服务器发送数据时会回调onReceive函数。
+swoole_server是异步服务器，所以是通过监听事件的方式来编写程序的。
+当对应的事件发生时底层会主动回调指定的PHP函数。
+如当有新的TCP连接进入时会执行onConnect事件回调，当某个连接向服务器发送数据时会回调onReceive函数。
 
 服务器可以同时被成千上万个客户端连接，$fd就是客户端连接的唯一标识符
 调用$server->send()方法向客户端连接发送数据，参数就是$fd客户端标识符
