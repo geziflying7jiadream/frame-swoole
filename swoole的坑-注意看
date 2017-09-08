@@ -1,0 +1,10 @@
+https://wenku.baidu.com/view/48f1b72c81c758f5f61f67ee.html
+
+使用swoole必须要掌握的技能 
+1. 多线程编程
+2. 进程间通信  
+3. 网络协议TCP/UDP的认知 
+4. PHP的各项基本技能
+
+swoole并不是一个简单的PHP框架，正如swoole官方首页的第一句话“重新定义PHP”，千万不要用旧有php的思想来写swoole代码！
+swoole重新激活了PHP，php成就了swoole!
