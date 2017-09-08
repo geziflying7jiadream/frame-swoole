@@ -1,0 +1,60 @@
+Swoole简单安装与创建TCP服务器：
+http://blog.csdn.net/qq_28602957/article/details/53504298
+
+-------------
+安装
+swoole项目已收录到PHP官方扩展库，我们可以通过PHP官方提供的pecl命令，一键下载安装swoole
+
+pecl install swoole
+注：需要先装php-pear
+
+如果安装完出现如下提示
+Installing '/usr/lib/php/modules/swoole.so'
+install ok: channel://pecl.php.net/swoole-1.9.0
+configuration option "php_ini" is not set to php.ini location
+You should add "extension=swoole.so" to php.ini
+则需要我们手动在php.ini文件中添加
+extension=swoole.so
+
+创建TCP服务器
+server.php
+<?php
+//创建Server对象，监听 127.0.0.1:9501端口
+$serv = new swoole_server("127.0.0.1", 9501);
+
+//监听连接进入事件
+$serv->on('connect', function ($serv, $fd) {
+    echo "Client: Connect.\n";
+});
+
+//监听数据发送事件
+$serv->on('receive', function ($serv, $fd, $from_id, $data) {
+    $serv->send($fd, "Server: ". $fd.'-----' . $data);
+});
+
+//监听连接关闭事件
+$serv->on('close', function ($serv, $fd) {
+    echo "Client: Close.\n";
+});
+
+//启动服务器
+$serv->start();
+这里就创建了一个TCP服务器，监听本机9501端口。它的逻辑很简单，当客户端Socket通过网络发送一个 hello 字符串时，服务器会回复一个 Server: hello 字符串。
+
+swoole_server是异步服务器，所以是通过监听事件的方式来编写程序的。当对应的事件发生时底层会主动回调指定的PHP函数。如当有新的TCP连接进入时会执行onConnect事件回调，当某个连接向服务器发送数据时会回调onReceive函数。
+
+服务器可以同时被成千上万个客户端连接，$fd就是客户端连接的唯一标识符
+调用$server->send()方法向客户端连接发送数据，参数就是$fd客户端标识符
+调用 $server->close()方法可以强制关闭某个客户端连接客户端可能会主动断开连接，此时会触发onClose事件回调
+执行程序
+php server.php
+可以在命令行模式下输入
+[root@VM_114_93_centos ~]# netstat -tunpl | grep 9501
+tcp        0      0 0.0.0.0:9501                0.0.0.0:*                   LISTEN      15387/php  
+看到，已经在监听9501端口
+
+这时我们就可以用telnet命令来连接服务器了。
+
+运行实例
+
+如果想要远程连接该服务器，只需将server.php中的IP地址改为0.0.0.0即可。
