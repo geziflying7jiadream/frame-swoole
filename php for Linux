@@ -1,0 +1,86 @@
+Linux环境下安装 Setup for Linux
+
+Linux操作系统通常都有自己的包管理软件（Ubuntu的apt-get，CentOS的yum，Mac OSX的HomeBrew等），因此一般情况下可以通过这些包管理软件直接安装PHP。
+但是这样安装的PHP不太适用于运行Swoole，因此本章将介绍如何通过源码编译安装。 
+Linux has usually got its own package management tools (like apt-get for Ubuntu, yum for CentOS, HomeBrew for Mac OSX...). So for most of the cases, we can directly install php using those tools. But for Swoole, compiling the source codes to install is suggested.
+
+1、编译环境 Compiling Environment
+
+想要编译安装PHP首先需要安装对应的编译工具。
+Ubuntu上使用如下命令安装编译工具和依赖包： To successfully compile PHP, we have to get our compilers and other related tools ready. We can install compiling tools and dependencies by using commands:
+
+sudo apt-get install \
+build-essential \
+gcc \
+g++ \
+autoconf \
+libiconv-hook-dev \
+libmcrypt-dev \
+libxml2-dev \
+libmysqlclient-dev \
+libcurl4-openssl-dev \
+libjpeg8-dev \
+libpng12-dev \
+libfreetype6-dev \
+
+2、PHP安装 PHP Installation
+
+PHP下载地址 Download 在这里挑选你想用的版本即可。下载源码包后，解压至本地任意目录（保证读写权限）。
+Download PHP of the version you want. Once done with that, extract it to any R/W directory.
+
+使用如下命令编译安装PHP： Use following commands to compile and install PHP:
+cd php-5.6.22/
+./configure --prefix=/usr/local/php \
+--with-config-file-path=/etc/php \
+--enable-fpm \
+--enable-pcntl \
+--enable-mysqlnd \
+--enable-opcache \
+--enable-sockets \
+--enable-sysvmsg \
+--enable-sysvsem \
+--enable-sysvshm \
+--enable-shmop \
+--enable-zip \
+--enable-soap \
+--enable-xml \
+--enable-mbstring \
+--disable-rpath \
+--disable-debug \
+--disable-fileinfo \
+--with-mysql=mysqlnd \
+--with-mysqli=mysqlnd \
+--with-pdo-mysql=mysqlnd \
+--with-pcre-regex \
+--with-iconv \
+--with-zlib \
+--with-mcrypt \
+--with-gd \
+--with-openssl \
+--with-mhash \
+--with-xmlrpc \
+--with-curl \
+--with-imap-ssl
+
+sudo make
+sudo make install
+sudo mkdir /etc/php
+sudo cp php.ini-development /etc/php/php.ini
+
+注意，以上PHP编译选项根据实际情况可调整。 To be sure, any of these compiling options is adjustable according to your specific needs.
+
+另外，还需要将PHP的可执行目录添加到环境变量中。 
+使用  Vim/Sublime打开  ~/.bashrc  ， 在末尾  添加  如下内容： Also, we need to add PHP's bin directory to environment variables. Open file '~/.bashrc' by Vim/Sublime. And add following contents to the end of the file:
+
+export PATH=/usr/local/php/bin:$PATH
+export PATH=/usr/local/php/sbin:$PATH
+
+保存后，终端输入命令： Having saved that, run following commands in Terminal:
+
+source ~/.bashrc
+
+此时即可通过
+
+php --version
+
+查看php版本。
